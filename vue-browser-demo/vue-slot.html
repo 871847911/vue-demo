@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="js/vue.js" ></script>
+	</head>
+	<body>		
+		<div id="app">
+		  <h1>{{name}}</h1>
+<!--		  <my-component v-bind:title='title'>
+		    <p>这是一些初始内容</p>
+		    <p>这是更多的初始内容</p>
+		  </my-component>-->
+		  <my-component v-bind:title='title'></my-component>		  
+		</div>		
+
+		<script>
+			Vue.component('my-component', {
+			  data: function () {
+			    return {
+			      counter: 0
+			    }
+			  },				
+			  props: ['title'],
+			  template: '\
+				<div>\
+				  <h2>{{title}}</h2>\
+				  <slot>\
+				    只有在没有要分发的内容时才会显示。\
+				  </slot>\
+				</div>\
+			  ',
+			  created: function () {
+			    // `this` 指向 组件 实例		props和data的数据都可以通过this指向获取	  	
+			    console.log('created 的name: ' + this.title+':'+this.counter)
+			  },
+			  beforeMount: function () {
+			    console.log('beforeMount的name:'+ this.title+':'+this.counter)
+			  },			  
+			  mounted: function () {
+			    console.log('mounted的name:' + this.title+':'+this.counter)
+			  }			  
+			})	
+			
+			var app = new Vue({
+			  el: '#app',
+			  data: {
+				name : '我是父组件的标题',
+				title : '我是子组件的标题'
+			  }
+			  
+			})
+		</script>
+	</body>
+</html>

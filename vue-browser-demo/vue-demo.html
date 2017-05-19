@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="js/vue.js" ></script>
+	</head>
+	<body>		
+		<div id="app">
+		  {{ message }}
+		</div>		
+		
+		<div id="app-2">
+		  <span v-bind:title="message">
+		    Hover your mouse over me for a few seconds to see my dynamically bound title!
+		  </span>
+		</div>
+		
+		<div id="app-3">
+<!--		  v-if:重新渲染
+		  v-show:display属性修改-->
+		  <p v-if="seen">Now you see me</p>
+		</div>		
+
+		<div id="app-4">
+		  <ol>
+		    <li v-for="todo in todos">
+		      {{ todo.text }}
+		    </li>
+		  </ol>
+		</div>
+		
+		<div id="app-5">
+		  <p>{{ message }}</p>
+		  <button v-on:click="reverseMessage">Reverse Message</button>
+		</div>	
+		
+		<div id="app-6">
+		  <p>{{ message }}</p>
+		  <input v-model="message">
+		</div>
+		
+		<ol id="app-7">
+			<h1>{{name}}</h1>
+		  <!-- Create an instance of the todo-item component -->
+		 <!-- <todo-item v-bind:todo="item"></todo-item>-->
+		  <todo-item v-for="item in groceryList" v-bind:todo="item"></todo-item>
+		</ol>
+		
+		<div id="app-8"></div>
+		
+		<div id="app-9">
+			<h5>{{name}}</h5>
+			<h5>js表达式：    {{name.split('').reverse().join('')}}</h5>
+			<h5>自定义过滤器:    {{name | capitalize}}</h5>
+			<h5>计算属性：    {{reversedName}}</h5>
+			<input v-model="name">
+			<div v-on:click="destory">销毁第9个组件,目前销毁不了</div>		
+		</div>	
+		
+		<div id="app-10" v-bind:style="style" v-bind:class="[{ active: isActive }, 'name']"></div>
+		
+		<div id="app-11">
+			<h1 v-if="ok === 0">0</h1>
+			<h1 v-else-if='ok === 1'>1</h1>
+			<h1 v-else>ok值非1或者0</h1>			
+		</div>
+		
+		<div id="app-12">
+			<template v-if="loginType === 'username'">
+			  <label>Username</label>
+			  <input placeholder="Enter your username" key="username-input">
+			</template>
+			<template v-else>
+			  <label>Email</label>
+			  <input placeholder="Enter your email address" key="email-input">
+			</template>	
+			<div v-on:click = 'change'>切换</div>
+		</div>
+		
+		<ul id="app-13">
+		  <li v-for="(item, index) in items">
+		    {{ parentMessage }} - {{ index }} - {{ item.message }}
+		  </li>
+		</ul>
+		
+		<div id="app-14">
+			  <input
+			    v-model="newTodoText"
+			    v-on:keyup.enter="addNewTodo"
+			    placeholder="Add a todo"
+			  >
+			  <ul>
+				<item 
+			      v-for="(todo, index) in todos"
+			      v-bind:title="todo"
+			      v-on:remove="todos.splice(index, 1)"	
+				></item>
+			  </ul>
+		</div>
+		
+		<div id="app-15">
+			<child v-bind:name="name"></child>
+		</div>
+		<script>
+						
+			var app = new Vue({
+			  el: '#app',
+			  data: {
+			    message: 'Hello Vue!'
+			  }
+			})			
+			
+			var app2 = new Vue({
+			  el: '#app-2',
+			  data: {
+			    message: 'You loaded this page on ' + new Date()
+			  }
+			})
+			
+			var app3 = new Vue({
+			  el: '#app-3',
+			  data: {
+			    seen: true
+			  }
+			})
+			
+			var app4 = new Vue({
+			  el: '#app-4',
+			  data: {
+			    todos: [
+			      { text: 'Learn JavaScript' },
+			      { text: 'Learn Vue' },
+			      { text: 'Build something awesome' }
+			    ]
+			  }
+			})
+			
+			var app5 = new Vue({
+			  el: '#app-5',
+			  data: {
+			    message: 'Hello Vue.js!'
+			  },
+			  methods: {
+			    reverseMessage: function () {
+			      console.log(this.message.split(''))
+			      console.log(this.message.split('').reverse())
+			      this.message = this.message.split('').reverse().join('')
+			    }
+			  }
+			})
+			
+			var app6 = new Vue({
+			  el: '#app-6',
+			  data: {
+			    message: 'Hello Vue!'
+			  },
+			  updated: function () {
+			    console.log('updated的name:'+ this.message)
+			  }			  
+			})
+
+
+			Vue.component('todo-item', {
+			  props: ['todo'],
+			  template: '<li>{{todo.text}}</li>'
+			})	
+			var app7 = new Vue({
+			  el: '#app-7',
+			  data: {
+				name : 'zzc',
+				item : { text: 'Vegetables' },
+			    groceryList: [
+			      { text: 'Vegetables' },
+			      { text: 'Cheese' },
+			      { text: 'Whatever else humans are supposed to eat' }
+			    ]				
+			  }
+			})
+			//console.log(app7.$data)
+			//console.log(app7.$el)
+			app7.$watch('name', function (newVal, oldVal) {
+			  // 这个回调将在 `vm.a`  改变后调用
+			  console.log('newVal:'+newVal)
+			  console.log('oldVal:'+oldVal)
+			})
+			
+			
+			
+			// 创建构造器
+			var Profile = Vue.extend({
+			  template: '<p>{{firstName}} {{lastName}} aka {{alias}}</p>',
+			  data: function () {
+			    return {
+			      firstName: 'Walter',
+			      lastName: 'White',
+			      alias: 'Heisenberg'
+			    }
+			  }
+			})
+			// 创建 Profile 实例，并挂载到一个元素上。
+			var app8 = new Profile().$mount('#app-8')
+			
+			
+			var app9 = new Vue({
+			  el: '#app-9',
+			  data: {
+				name : 'zzc第9个实例'				
+			  },
+			  //计算属性，随着name的修改而相应的修改,计算属性有缓存，methods的reversedName方法不会有缓存
+			  computed: {
+			    // a computed getter
+			    reversedName: function () {
+			      // `this` points to the vm instance
+			      return this.name.split('')[0]
+			    }
+			  },		  
+		      beforeCreate: function () {
+				console.log('beforeCreate 的name: ' + this.name)
+		      },			  
+			  created: function () {
+			    // `this` 指向 vm 实例			  	
+			    console.log('created 的name: ' + this.name)
+			  },
+			  beforeMount: function () {
+			    console.log('beforeMount的name:'+ this.name)
+			  },			  
+			  mounted: function () {
+			    console.log('mounted的name:' + this.name)
+			  },
+			  beforeUpdate: function () {
+			    console.log('beforeUpdate的name:'+ this.name)
+			  },
+			  updated: function () {
+			    console.log('updated的name:'+ this.name)
+			  },
+			  beforeDestory: function () {
+			    console.log('beforeDestory的name:'+ this.name)
+			  },
+			  destoryed: function () {
+			    console.log('destoryed的name:'+ this.name)
+			  },
+			  //自定义数据过滤器
+			  filters: {
+			    capitalize: function (value) {
+			      if (!value) return ''
+			      value = value.toString()
+			      return value.charAt(0).toUpperCase() + value.slice(1)
+			    }
+			  },
+			  //定义的一些方法
+			  methods: {
+			    destory: function (event) {
+			      // `this` 在方法里指当前 Vue 实例
+			      //alert('Hello ' + this.name + '!')
+			      // `event` 是原生 DOM 事件
+			      //alert(event.target.tagName)
+			      console.log(this)
+			      console.log(this.$destroy)
+			    }
+			  },
+			  //监视name属性变化时调用
+			  watch: {
+			    name: function (val, oldVal) {
+			      console.log('new: %s, old: %s', val, oldVal)
+			    }			  	
+			  }
+			})
+			
+			var app10 = new Vue({
+			  el: '#app-10',
+			  data: {
+				  style: {
+				    width: '50px',
+				    height: '50px',
+				    backgroundColor: 'red'
+				  },
+				  isActive : true
+			  }
+			})
+			
+			var app11 = new Vue({
+			  el: '#app-11',
+			  data: {
+			    ok: 3
+			  }
+			})			
+
+			var app12 = new Vue({
+			  el: '#app-12',
+			  data: {
+			    loginType : 'username'
+			  },
+			  methods: {
+			    change: function () {
+					if(this.loginType === 'username'){
+						this.loginType = 'email'
+					}else{
+						this.loginType = 'username'
+					}
+			    }
+			  }			  
+			})
+			
+			var app13 = new Vue({
+			  el: '#app-13',
+			  data: {
+			    parentMessage: 'Parent',
+			    items: [
+			      { message: 'Foo' },
+			      { message: 'Bar' }
+			    ]
+			  }
+			})
+
+			//\字符串衔接，js字符串用\'name\'转义
+			Vue.component('item', {
+			  template: '\
+			    <li>\
+			      {{ title }}\
+			      <button v-on:click="$emit(\'remove\')">X</button>\
+			    </li>\
+			  ',
+			  props: ['title']
+			})
+			var app14=new Vue({
+			  el: '#app-14',
+			  data: {
+			    newTodoText: '',
+			    todos: [
+			      'Do the dishes',
+			      'Take out the trash',
+			      'Mow the lawn'
+			    ]
+			  },
+			  methods: {
+			    addNewTodo: function () {
+			      this.todos.push(this.newTodoText)
+			      this.newTodoText = ''
+			    }
+			  }
+			})			
+
+
+			//组件局部注册
+			var Child = {
+			  template: '\
+			    <div>\
+			      {{ name }}\
+			      <p>151515151515</p>\
+			    </div>\
+			  ',
+			  props: ['name']			  
+			}						
+			var app15=new Vue({
+			  el: '#app-15',
+			  data: {
+				name : 'demo15'
+			  },
+			  components: {
+			    // <my-component> 将只在父模板可用
+			    'child': Child
+			  }
+			})
+		</script>
+	</body>
+</html>
